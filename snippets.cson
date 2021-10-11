@@ -1,0 +1,293 @@
+
+
+'.source.python':
+  'Class Function:Invoke Dialog':
+    'prefix': 'inv_prop'
+    'body':"""
+
+    def invoke(self, context, event):
+
+        return context.window_manager.invoke_props_dialog(self)
+
+    """
+
+  'Class Function:Invoke Execute':
+    'prefix': 'inv_exe'
+    'body':"""
+
+    def invoke(self, context, event):
+
+        return self.execute(context)
+
+    """
+
+  'Class Function: Draw':
+    'prefix': 'draw'
+    'body':"""
+
+    def draw(self, context):
+        layout = self.layout
+        $1
+
+    """
+
+  'Class Function: Poll':
+    'prefix': 'poll_cls'
+    'body':"""
+
+    @classmethod
+    def poll(cls, context):
+        $1
+        return True
+
+    """
+
+
+  'Register':
+    'prefix': 'register'
+    'body':"""
+
+classes = [$1]
+
+def register():
+
+    for cls in classes:
+        bpy.utils.register_class(cls)
+
+
+def unregister():
+
+    for cls in classes:
+        bpy.utils.unregister_class(cls)
+
+
+if __name__ == "__main__":
+    register()
+
+    """
+
+  'Class Function:Variable: Enum':
+    'prefix': 'enum_var'
+    'body':"""ENUM_${1:Item} = [("$2","$3","$4"),("$5","$6","$7")]"""
+
+
+  'Class Function:Class: Operator (Full)':
+    'prefix': 'operator_cls'
+    'body':'''
+class ${1:ADDON}_OT_${2:Addon_Operator}(bpy.types.Operator):
+    """Addon Operator"""
+    bl_idname = "${3:addon}.${4:operator}"
+    bl_label = "${5:Addon Operator}"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def draw(self, context):
+        layout = self.layout
+
+    def invoke(self, context, event):
+
+        return self.execute(context)
+
+    def execute(self, context):
+
+        return {'FINISHED'}
+    '''
+
+
+
+  'Class Function:Class: Menu':
+    'prefix': 'menu_cls'
+    'body':'''
+
+class ADDON_MT_Addon_Menu(bpy.types.Menu):
+    bl_label = "Addon Menu"
+    bl_idname = "ADDON_MT_menu"
+
+    def draw(self, context):
+
+        layout = self.layout
+
+    '''
+
+
+
+  'Class Function:Addon Info':
+    'prefix': 'info_addon'
+    'body':'''
+
+bl_info = {
+    "name": "${1:Addon}",
+    "author": "${2:Author}",
+    "version": (1, 0),
+    "blender": (2, 80, 0),
+    "description": "${3:Description}",
+    "wiki_url": "",
+    "category": "${4:Addon}",
+}
+
+    '''
+
+
+  'Class Function: Init':
+    'prefix': 'init'
+    'body':'''
+
+
+import bpy
+
+modules = [$1]
+
+def register():
+
+    for module in modules:
+        module.register()
+
+def unregister():
+
+    for module in modules:
+        module.unregister()
+
+if __name__ == "__main__":
+    register()
+
+    '''
+
+
+  'Class Function: Prop: Int':
+    'prefix': 'int_prop'
+    'body':'''
+
+bpy.props.IntProperty($1)
+
+    '''
+  'Class Function: Prop: Float':
+    'prefix': 'float_prop'
+    'body':'''
+
+bpy.props.FloatProperty($1)
+
+    '''
+  'Class Function: Prop: Boolean':
+    'prefix': 'bool_prop'
+    'body':'''
+
+bpy.props.BoolProperty($1)
+
+    '''
+
+  'Class Function: Prop: Boolean Vector':
+    'prefix': 'bool_vector_prop'
+    'body':'''
+
+bpy.props.BoolVectorProperty(size=${1:3}, default=(${2:False}, ${3:False}, ${4:False}))
+
+    '''
+
+  'Class Function: Prop: Collection':
+    'prefix': 'col_prop'
+    'body':'''
+
+bpy.props.CollectionProperty(type=${1:PropertyGroup})
+
+    '''
+
+  'Class Function: Prop: Enum':
+    'prefix': 'enum_prop'
+    'body':'''
+
+bpy.props.EnumProperty(items=${1:ENUM_Items})
+
+    '''
+  'Class Function: Prop: Float Vector':
+    'prefix': 'float_vector_prop'
+    'body':'''
+
+bpy.props.FloatVectorProperty(size=${1:3}, default=(${2:0}, ${3:0}, ${4:0}))
+
+    '''
+
+  'Class Function: Prop: Int Vector':
+    'prefix': 'int_vector_prop'
+    'body':'''
+
+bpy.props.IntVectorProperty(size=${1:3}, default=(${2:0}, ${3:0}, ${4:0}))
+
+    '''
+
+  'Class Function: Prop: String':
+    'prefix': 'string_prop'
+    'body':'''
+
+bpy.props.StringProperty(default=${1:"string"})
+
+    '''
+
+  'Class Function: Prop: Pointer':
+    'prefix': 'pointer_prop'
+    'body':'''
+
+bpy.props.PointerProperty(type=${1:bpy.types.}${2:Object})
+
+    '''
+
+
+  'Class Function: Type: Object':
+    'prefix': 'object_type'
+    'body':'''
+
+bpy.types.Object.${1:PropertyName}
+
+    '''
+  'Class Function: Type: Scene':
+    'prefix': 'scene_type'
+    'body':'''
+
+bpy.types.Scene.${1:PropertyName}
+
+    '''
+
+  'Class Function: Property Function: Update':
+    'prefix': 'update_property_func'
+    'body':'''
+
+def UPDATE_Property(self, context):
+    pass
+
+    '''
+
+  'Class Function: Property Function: Poll':
+    'prefix': 'poll_property_func'
+    'body':'''
+
+def POLL_${1:Property}(self, object):
+    if object.type == "${2:MESH}":
+      return True
+
+    '''
+
+
+  'Class Function: Class: Property Group':
+    'prefix': 'group_property_cls'
+    'body':'''
+
+class ${1:ADDON}_${2:PropertyGroup}(bpy.types.PropertyGroup):
+    ${3:int_property}: bpy.props.${4:Int}Property()
+    $5
+
+    '''
+
+
+
+
+
+
+  'Class Function: UI: Label':
+    'prefix': 'label_ui'
+    'body':'''label(text="$1")'''
+
+  'Class Function: UI: Property':
+    'prefix': 'prop_ui'
+    'body':'''prop(${1:self},"${2:property}",text="$3")'''
